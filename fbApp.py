@@ -31,6 +31,16 @@ def findUser(name):
     print("User's main url: {}".format(user.url))
 
 
+def sendTime():
+    # sends the time every 2 seconds
+    thread_id = '1776042969102657'
+    thread_type = ThreadType.GROUP
+    for i in range(3):
+        time.sleep(2)
+        pyBot.send(Message(text=str(time.ctime())[11:19]), thread_id=thread_id,
+                   thread_type=thread_type)
+
+
 class pyBot(Client):
 
     def onMessage(self, author_id, message_object,
@@ -49,10 +59,11 @@ class pyBot(Client):
                 self.send(Message(text=response), thread_id=thread_id,
                           thread_type=thread_type)
         elif replyAll:
-            response = getResponse(message_object.text)
+            #response = getResponse(message_object.text)
             if author_id != self.uid:
-                self.send(Message(text=response), thread_id=thread_id,
-                          thread_type=thread_type)
+                # self.send(Message(text=response), thread_id=thread_id,
+                #          thread_type=thread_type)
+                self.reactToMessage(message_object.uid, MessageReaction.LOVE)
         time.sleep(1)
 
 
@@ -65,13 +76,16 @@ if __name__ == '__main__':
     idx2Char = {val: key for key, val in char2Idx.items()}
 
     sessionCookie = np.load('sessionCookies.npy')[0]
-    pyBot = pyBot("asd", "asd", session_cookies=sessionCookie)
-    threadList = pyBot.fetchThreadList()
 
+    pyBot = pyBot("asd", "asd", session_cookies=sessionCookie)
+
+    # threadList = pyBot.fetchThreadList()
     # for thread in threadList:
     #   self.send(Message(text=response), thread_id=thread_id,
     #             thread_type=thread_type)
     #   pyBot.send(Message(text='<ONLINE>'), thread_id=thread.uid,
     #              thread_type=thread.type)
+
+    # sendtime()
     pyBot.listen()
     # pyBot.logout()

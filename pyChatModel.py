@@ -63,6 +63,7 @@ class Rnn():
 
     def lossFunction(self, inputs, targets, prevHState):
         '''(array,array,array) -> int, array
+        Negative Log Likelihood(Cross Entropy Loss)
         given char2int array (e.g. 'abc'->[1,2,3]), char2int array of
         target chars and previous hidden state matrix will perform
         forward propagation and return the loss and hidden state of last

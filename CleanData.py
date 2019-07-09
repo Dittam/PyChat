@@ -4,6 +4,9 @@ import re
 
 def cleanText(text):
     text = text.lower()
+    text = re.sub(r"@[^\s,<.>/?;\\:'\"|}{]+", "", text)
+    text = re.sub(r"https?:[^\s]+", "", text)
+    text = re.sub(r"www\.[^\s]+", "", text)
     text = re.sub(r"i'm", "i am", text)
     text = re.sub(r"he's", "he is", text)
     text = re.sub(r"she's", "she is", text)
@@ -24,7 +27,7 @@ def cleanText(text):
     text = re.sub(r"'bout", "about", text)
     text = re.sub(r"'til", "until", text)
     text = re.sub(r"\n", "", text)
-    text = re.sub(r"[-()’\"#/\\@;^&_*$:<>{}`+=~|,]", "", text)
+    text = re.sub(r"[-().'\"’“”\"#/!%?;\\@;^&_*$:<>{}`+=~|,]", "", text)
 
     return text
 

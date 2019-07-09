@@ -31,14 +31,16 @@ def findUser(name):
     print("User's main url: {}".format(user.url))
 
 
-def sendTime():
-    # sends the time every 2 seconds
-    thread_id = '1776042969102657'
-    thread_type = ThreadType.GROUP
-    for i in range(3):
-        time.sleep(2)
-        pyBot.send(Message(text=str(time.ctime())[11:19]), thread_id=thread_id,
-                   thread_type=thread_type)
+def sendMessage(thread_id='1776042969102657', thread_type=ThreadType.GROUP,
+                message='<ONLINE>'):
+    pyBot.send(Message(text=message, thread_id=thread_id,
+                       thread_type=thread_type))
+
+
+def generateNewSessionCookie(client):
+    sessionCookies = client.getSession()
+    with open('sessionCookies.npy', 'wb') as file:
+        np.save(file, [sessionCookies])
 
 
 class pyBot(Client):
@@ -47,7 +49,7 @@ class pyBot(Client):
                   thread_id, thread_type, logging_level=0, ** kwargs):
         #self.markAsDelivered(thread_id, message_object.uid)
         # self.markAsRead(thread_id)
-        replyAll = False
+        replyWithoutAt = False
         if 'exit()' in message_object.text:
             self.stopListening()
             self.send(Message(text='<OFFLINE>'), thread_id=thread_id,
@@ -58,11 +60,11 @@ class pyBot(Client):
             if author_id != self.uid:
                 self.send(Message(text=response), thread_id=thread_id,
                           thread_type=thread_type)
-        elif replyAll:
-            #response = getResponse(message_object.text)
+        elif replyWithoutAt:
+            response = getResponse(message_object.text)
             if author_id != self.uid:
-                # self.send(Message(text=response), thread_id=thread_id,
-                #          thread_type=thread_type)
+                self.send(Message(text=response), thread_id=thread_id,
+                          thread_type=thread_type)
                 self.reactToMessage(message_object.uid, MessageReaction.LOVE)
         time.sleep(1)
 
@@ -70,22 +72,17 @@ class pyBot(Client):
 if __name__ == '__main__':
 
     wordVocab = loadWordVocab()
-
     model = Rnn()
     char2Idx = model.loadModel('modelExport.npy')
     idx2Char = {val: key for key, val in char2Idx.items()}
 
     sessionCookie = np.load('sessionCookies.npy')[0]
-
-    pyBot = pyBot("asd", "asd", session_cookies=sessionCookie)
+    pyBot = pyBot("pybotalpha@gmail.com", "Rd-4210!",
+                  session_cookies=sessionCookie)
 
     # threadList = pyBot.fetchThreadList()
     # for thread in threadList:
-    #   self.send(Message(text=response), thread_id=thread_id,
-    #             thread_type=thread_type)
-    #   pyBot.send(Message(text='<ONLINE>'), thread_id=thread.uid,
-    #              thread_type=thread.type)
+    #     sendMessage(thread.uid,thread.type,'<ONLINE>')
 
-    # sendtime()
     pyBot.listen()
     # pyBot.logout()
